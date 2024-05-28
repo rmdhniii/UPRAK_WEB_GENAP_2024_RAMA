@@ -1,3 +1,41 @@
+<?php
+session_start();
+include('database.php'); 
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $username = trim($_POST['username']);
+    $password = trim($_POST['password']);
+    $error_message = "";
+
+    if (empty($username) || empty($password)) {
+        $error_message = "Username atau password harus diisi";
+    } else {
+
+        $query = "SELECT * FROM kasir WHERE username = ?";
+        $stmt = $koneksi->prepare($query);
+        $stmt->bind_param('s', $username);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            $user = $result->fetch_assoc();
+
+            if (password_verify($password, $user['password'])) {
+                $_SESSION['username'] = $user['id'];
+                header('Location: dashboard.php');
+                exit();
+            } else {
+                $error_message = "Password tidak sesuai";
+            }
+        } else {
+            $error_message = "Username tidak terdaftar";
+        }
+    }
+    
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -154,5 +192,18 @@ button{
           <div class="fb"><i class="fab fa-facebook"></i>  Facebook</div>
         </div>
     </form>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+            var errorMessage = document.getElementById('error-message');
+
+            if (username === "" || password === "") {
+                event.preventDefault();
+                errorMessage.textContent = "Username atau password harus diisi";
+                errorMessage.style.color = "red";
+            }
+        });
+    </script>
 </body>
 </html>
