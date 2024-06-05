@@ -18,7 +18,7 @@ class  database {
     }
        
     }
-    public function ambil_data($query);
+    public function ambil_data($query)
     {
         $this->koneksi();
 
@@ -30,13 +30,5 @@ class  database {
         
         $koneksi->close();
 
-        if ($result != null) {
-            $row = $result->fetch_array(MYSQLI_ASSOC);
-                while(!empyt($row)){
-                    $returnValue = array_merge($returnValue, $row);
-                    $row = $result->fetch_array(MYSQLI_ASSOC);
-                }
-            return $returnValue; 
-            }
     }
 

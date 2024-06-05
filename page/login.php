@@ -1,6 +1,7 @@
 <?php
 session_start();
 include('database.php'); 
+header("Location: dashboard.php");
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = trim($_POST['username']);
